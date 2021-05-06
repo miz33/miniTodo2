@@ -1,0 +1,260 @@
+﻿<Window x:Class="miniTodo.View.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:local="clr-namespace:miniTodo.View"
+	xmlns:appRoot="clr-namespace:miniTodo"
+    Title="miniTodo" Name="_window" Height="400" Width="350"
+	AllowsTransparency="True" Background="Transparent" WindowStyle="None"
+	ResizeMode="CanResizeWithGrip">
+	<Window.CommandBindings>
+		<CommandBinding Command="{x:Static local:MainWindow.EditItemCommand}" Executed="EditItem_Executed"/>
+	</Window.CommandBindings>
+	<Window.Resources>
+
+		<!--テキスト-->
+		<Style x:Key="_glowText" TargetType="{x:Type TextBlock}">
+			<Setter Property="Foreground" Value="White"/>
+			<Setter Property="FontWeight" Value="Bold"/>
+			<Setter Property="BitmapEffect">
+				<Setter.Value>
+					<OuterGlowBitmapEffect GlowColor="Black" GlowSize="3" Noise="0" Opacity="1"/>
+				</Setter.Value> 
+			</Setter>
+		</Style>
+		
+		<!--ボタンの背景-->
+		<LinearGradientBrush x:Key="_buttonBackgroundBrush" StartPoint="0,0" EndPoint="0,1" Opacity="0.5">
+			<GradientStop Color="Gray" Offset="0"/>
+			<GradientStop Color="Black" Offset="1"/>
+		</LinearGradientBrush>
+		
+		<!--ボタンの見た目-->
+		<Style x:Key="{x:Type Button}" TargetType="{x:Type Button}">
+			<Setter Property="Background" Value="{StaticResource _buttonBackgroundBrush}"/>
+			<Setter Property="BorderBrush" Value="Black"/>
+			<Setter Property="Foreground" Value="White"/>
+			<Setter Property="FontSize" Value="10"/>
+			<Setter Property="FontWeight" Value="Bold"/>
+			<Setter Property="Padding" Value="1"/>
+			<Setter Property="Margin" Value="1,0"/>
+		</Style>
+
+		<!--ListBoxの現在行の背景-->
+		<LinearGradientBrush x:Key="_selectedBackgroundBrush" StartPoint="0,0" EndPoint="1,0">
+			<GradientStop Color="LightGray" Offset="1"/>
+			<GradientStop Color="Gray" Offset="0"/>
+		</LinearGradientBrush>
+		
+		<!--ListBoxItemのStyle-->
+		<Style x:Key="{x:Type ListBoxItem}" TargetType="{x:Type ListBoxItem}">
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type ListBoxItem}">
+						<Grid x:Name="_itemContainer" Loaded="Grid_Loaded" Tag="{Binding}">
+							<Grid.CommandBindings>
+								<CommandBinding Command="{x:Static local:MainWindow.DoneCommand}" Executed="Done_Executed"/>
+							</Grid.CommandBindings>
+							<DockPanel  Height="20">
+								<DockPanel.InputBindings>
+									<MouseBinding Command="{x:Static local:MainWindow.EditItemCommand}" Gesture="LeftDoubleClick"/>
+								</DockPanel.InputBindings>
+								<DockPanel.Background>
+									<!--Done時に背景をフラッシュさせるためにほぼ透明の背景を作成-->
+									<SolidColorBrush x:Name="_itemBackground" Color="White" Opacity="0.01"/>
+								</DockPanel.Background>
+								<!--Todoアイテムの上に表示されるボタン-->
+								<StackPanel x:Name="_commands" Orientation="Horizontal" DockPanel.Dock="Right">
+									<Button Command="{x:Static local:MainWindow.DoneCommand}" CommandParameter="{Binding}">Done</Button>
+									<Button Command="{Binding Path=SoonerCommand}">Soon</Button>
+									<Button Command="{Binding Path=LaterCommand}">Later</Button>
+								</StackPanel>
+								<!--Todoテキスト-->
+								<TextBlock x:Name="_title" Text="{Binding Path=Title}" TextWrapping="Wrap"
+										   Style="{StaticResource _glowText}"/>
+								<!--右クリック時のメニュー-->
+								<DockPanel.ContextMenu>
+									<ContextMenu>
+										<MenuItem Header="Edit" Command="{x:Static local:MainWindow.EditItemCommand}"/>
+										<MenuItem Header="Later" Command="{Binding Path=LaterCommand}"/>
+										<MenuItem Header="Sooner" Command="{Binding Path=SoonerCommand}"/>
+										<MenuItem Header="Done" Command="{x:Static local:MainWindow.DoneCommand}" CommandParameter="{Binding}"
+												  CommandTarget="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}, Path=PlacementTarget}"/>
+										<MenuItem Header="Delete" Command="{Binding Path=DeleteCommand}" />
+									</ContextMenu>
+								</DockPanel.ContextMenu>
+							</DockPanel>
+							<!--完了マーク-->
+							<TextBlock x:Name="_doneMark" VerticalAlignment="Center" Margin="15,0,0,0"
+									   FontWeight="ExtraBold" Visibility="Collapsed">✓
+								<TextBlock.RenderTransform>
+									<ScaleTransform ScaleX="2" ScaleY="2" CenterX="7" CenterY="7"/>
+								</TextBlock.RenderTransform>
+								<TextBlock.Foreground>
+									<LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+										<GradientStop Color="GreenYellow" Offset="0"/>
+										<GradientStop Color="LimeGreen" Offset="1"/>
+									</LinearGradientBrush>
+								</TextBlock.Foreground>
+							</TextBlock>
+							<!--新規作成時のスライドインアニメーション用-->
+							<Grid.RenderTransform>
+								<TranslateTransform x:Name="_slideInTransform"></TranslateTransform>
+							</Grid.RenderTransform>
+							<Grid.Resources>
+								<!--新規アイテムを挿入するアニメーション-->
+								<Storyboard x:Key="_slideInAnimation">
+									<DoubleAnimation Storyboard.TargetName="_slideInTransform"
+																 Storyboard.TargetProperty="X"
+																 From="{Binding ElementName=_window, Path=Width}" Duration="0:0:0.5">
+									</DoubleAnimation>
+								</Storyboard>
+								<!--完了時のアニメーション-->
+								<Storyboard x:Key="_doneAnimation">
+									<DoubleAnimation Storyboard.TargetName="_itemContainer"
+													 Storyboard.TargetProperty="Opacity"
+													 To="0" BeginTime="0:0:0.5" Duration="0:0:1"/>
+									<DoubleAnimation Storyboard.TargetName="_itemBackground"
+													 Storyboard.TargetProperty="Opacity"
+													 From="1" Duration="0:0:0.1"/>
+								</Storyboard>
+							</Grid.Resources>
+						</Grid>
+						<ControlTemplate.Triggers>
+							<!--MouseOverしないときはボタンを非表示-->
+							<Trigger Property="IsMouseOver" Value="False">
+								<Setter TargetName="_commands" Property="Visibility" Value="Collapsed"/>
+							</Trigger>
+							<!--MouseOverで行を強調表示-->
+							<Trigger Property="IsMouseOver" Value="True">
+								<Setter TargetName="_itemContainer" Property="Background" Value="{StaticResource _selectedBackgroundBrush}"/>
+								<Setter TargetName="_title" Property="Foreground" Value="White"/>
+								<Setter TargetName="_title" Property="FontWeight" Value="Bold"/>
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+		
+	</Window.Resources>
+	<Grid>
+		<DockPanel>
+			<!--データ表示欄-->
+			<Border DockPanel.Dock="Top"
+					BorderBrush="LightGray" BorderThickness="3" CornerRadius="3">
+				<DockPanel Name="_dataPanel" MouseDown="DataPanel_MouseDown" IsHitTestVisible="True">
+					<!--統計データ表示-->
+					<TextBlock Margin="2" Style="{StaticResource _glowText}" >昨日:</TextBlock>
+					<TextBlock Text="{Binding Path=YesterdaysDoneNum}" Margin="2" Style="{StaticResource _glowText}"/>
+					<TextBlock Margin="2" Style="{StaticResource _glowText}">今日:</TextBlock>
+					<TextBlock Text="{Binding Path=TodaysDoneNum}" FontWeight="Bold" Margin="2" Style="{StaticResource _glowText}"/>
+					<TextBlock Margin="2" Style="{StaticResource _glowText}">残り:</TextBlock>
+					<TextBlock Text="{Binding Path=RemainTodosNum}" Margin="2" Style="{StaticResource _glowText}"/>
+					<!--ボタン-->
+					<StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+						<Button Command="{Binding Path=ShowDailyGraphCommand}">
+							<StackPanel Orientation="Horizontal" VerticalAlignment="Stretch">
+								<TextBlock VerticalAlignment="Center">Graph</TextBlock>
+								<Menu Background="Transparent" Foreground="White">
+									<MenuItem Header="▼" Padding="0">
+										<MenuItem Header="日単位" Foreground="Black"
+												  Command="{Binding Path=ShowDailyGraphCommand}"/>
+										<MenuItem Header="週単位" Foreground="Black"
+												  Command="{Binding Path=ShowWeeklyGraphCommand}"/>
+										<MenuItem Header="月単位" Foreground="Black"
+												  Command="{Binding Path=ShowMonthlyGraphCommand}"/>
+									</MenuItem>
+								</Menu>
+							</StackPanel>
+						</Button>
+						<Button Click="Close_Click" >Close</Button>
+						<StackPanel.Style>
+							<Style TargetType="{x:Type StackPanel}">
+								<Style.Triggers>
+									<DataTrigger Binding="{Binding ElementName=_dataPanel, Path=IsMouseOver}" Value="False">
+										<Setter Property="Visibility" Value="Hidden"/>
+									</DataTrigger>
+								</Style.Triggers>
+							</Style>
+						</StackPanel.Style>
+					</StackPanel>
+					<!--右クリックメニュー-->
+					<DockPanel.ContextMenu>
+						<ContextMenu>
+							<MenuItem Header="最前面に表示"
+									  IsChecked="{Binding Source={x:Static appRoot:App.Current}, Path=MainWindow.Topmost, Mode=TwoWay}" IsCheckable="True"/>
+							<MenuItem Header="全アイテム管理"
+									  Click="AllItemsView_Click"/>
+						</ContextMenu>
+					</DockPanel.ContextMenu>
+					<!--背景-->
+					<DockPanel.Style>
+						<Style TargetType="{x:Type DockPanel}">
+							<Setter Property="Background">
+								<Setter.Value>
+									<SolidColorBrush Color="Black" Opacity="0.01"/>
+									<!--ほぼ透明な背景 Mouseクリックを拾うため完全な透明ではない-->
+								</Setter.Value>
+							</Setter>
+							<Style.Triggers>
+								<Trigger Property="IsMouseOver" Value="True">
+									<Setter Property="Background">
+										<Setter.Value>
+											<LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+												<GradientStop Offset="0" Color="Gray"/>
+												<GradientStop Offset="0.5" Color="Black"/>
+											</LinearGradientBrush>
+										</Setter.Value>
+									</Setter>
+								</Trigger>
+							</Style.Triggers>
+						</Style>
+					</DockPanel.Style>
+				</DockPanel>
+			</Border>
+		
+			<!--新規入力欄-->
+			<DockPanel DockPanel.Dock="Bottom">
+				<StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+					<Button Content="Soon" Command="{Binding Path=CreateToTopCommand}"/>
+					<Button Content="Later" Command="{Binding Path=CreateCommand}" />
+					<StackPanel.Style>
+						<Style TargetType="{x:Type StackPanel}">
+							<Style.Triggers>
+								<DataTrigger Binding="{Binding ElementName=_window, Path=HasTextForNewTodo}" Value="False">
+									<Setter Property="Visibility" Value="Hidden"/>
+								</DataTrigger>
+							</Style.Triggers>
+						</Style>
+					</StackPanel.Style>
+				</StackPanel>
+				<Border BorderBrush="LightGray" BorderThickness="2" CornerRadius="3">
+					<TextBox Text="{Binding Path=EditingText, UpdateSourceTrigger=PropertyChanged}"
+							 Name="_newTodoTextBox" TextChanged="_newTodo_TextChanged">
+						<TextBox.Style>
+							<Style TargetType="{x:Type TextBox}">
+								<Setter Property="Opacity" Value="1.0"/>
+								<Style.Triggers>
+									<MultiTrigger>
+										<MultiTrigger.Conditions>
+											<Condition Property="IsMouseOver" Value="False"/>
+											<Condition Property="IsKeyboardFocused" Value="False"/>
+										</MultiTrigger.Conditions>
+										<Setter Property="Opacity" Value="0.01"/>
+									</MultiTrigger>
+								</Style.Triggers>
+							</Style>
+						</TextBox.Style>
+					</TextBox>
+				</Border>
+			</DockPanel>
+		
+			<!--Todoリスト-->
+			<ListBox ItemsSource="{Binding Path=ViewSource.View}" DisplayMemberPath="Title" Name="_todoListBox"
+					 HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+					 Background="Transparent" BorderThickness="0" BorderBrush="Transparent">
+			</ListBox>
+		</DockPanel>
+		<ResizeGrip HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="3" Height="3"/>
+	</Grid>
+</Window>

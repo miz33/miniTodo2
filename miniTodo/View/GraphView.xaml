@@ -1,0 +1,32 @@
+﻿<Window x:Class="miniTodo.View.GraphView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="GraphView" Height="400" Width="600"
+	>
+	<!-- 環境を再構築したら WPF ToolKit がビルドできなくなったので、いったんコメントアウト-->
+	<!-- chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"-->
+	<!--
+	<Window.Resources>
+		<Style x:Key="DateTimeAxisLabelStyle" TargetType="{x:Type chartingToolkit:DateTimeAxisLabel}">
+			<Setter Property="StringFormat" Value="{}{0:MM/dd}"/>
+		</Style>
+		<Style x:Key="PointStyle" TargetType="{x:Type Polyline}">
+			<Setter Property="StrokeThickness" Value="3"/>
+		</Style>
+	</Window.Resources>
+	-->
+	<!-- 
+	<chartingToolkit:Chart>
+		<chartingToolkit:LineSeries Title="Done"  ItemsSource="{Binding Path=DoneNum}"
+			DependentValuePath="Value" IndependentValuePath="Key"/>
+		<chartingToolkit:LineSeries Title="Create" ItemsSource="{Binding Path=CreateNum}"
+			DependentValuePath="Value" IndependentValuePath="Key"/>
+		<chartingToolkit:LineSeries Title="Point" ItemsSource="{Binding Path=Point}"
+			DependentValuePath="Value" IndependentValuePath="Key" PolylineStyle="{StaticResource PointStyle}"/>
+		<chartingToolkit:Chart.Axes>
+			<chartingToolkit:DateTimeAxis Orientation="X" AxisLabelStyle="{StaticResource DateTimeAxisLabelStyle}"/>
+			<chartingToolkit:LinearAxis Orientation="Y"/>
+		</chartingToolkit:Chart.Axes>
+	</chartingToolkit:Chart>
+	-->
+</Window>

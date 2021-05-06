@@ -1,0 +1,18 @@
+﻿<Window x:Class="miniTodo.View.AllTodoView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="AllTodoView" Height="500" Width="750">
+	<!-- 環境を再構築したら WPF ToolKit がビルドできなくなったので、いったんコメントアウト-->
+	<!-- toolkit="clr-namespace:Microsoft.Windows.Controls;assembly=WPFToolkit"-->
+	<!--
+	<toolkit:DataGrid ItemsSource="{Binding Path=AllItems}" AutoGenerateColumns="False">
+		<toolkit:DataGrid.Columns>
+			<toolkit:DataGridTextColumn Header="タイトル" Binding="{Binding Path=Title}" Width="400" />
+			<toolkit:DataGridCheckBoxColumn Header="完了" Binding="{Binding Path=IsDone}"/>
+			<toolkit:DataGridCheckBoxColumn Header="削除" Binding="{Binding Path=IsDeleted}" />
+			<toolkit:DataGridTextColumn Header="更新" Binding="{Binding Path=StatusUpdated, StringFormat=yy/MM/dd HH:mm}" IsReadOnly="True"/>
+			<toolkit:DataGridTextColumn Header="作成" Binding="{Binding Path=Created, StringFormat=yy/MM/dd HH:mm}" IsReadOnly="True"/>
+		</toolkit:DataGrid.Columns>
+	</toolkit:DataGrid>
+	-->
+</Window>
