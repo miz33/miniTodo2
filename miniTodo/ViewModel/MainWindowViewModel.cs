@@ -141,6 +141,23 @@ namespace miniTodo.ViewModel {
 			}
 		}
 
+		private ICommand _settingsCommand;
+		public ICommand SettingsCommand {
+			get {
+				if (_settingsCommand == null) {
+					_settingsCommand = new RelayCommand(
+						param => {
+							//※ViewModelでViewを呼び出しているのはよくないが、本格的なプログラムじゃないので今回は目をつむる
+							var view = new SettingsView(new SettingsViewModel());
+							view.Owner = App.Current.MainWindow;
+							view.ShowDialog();
+						}
+					);
+				}
+				return _settingsCommand;
+			}
+		}
+
 		private ICommand _showDailyGraphCommand;
 		public ICommand ShowDailyGraphCommand {
 			get {

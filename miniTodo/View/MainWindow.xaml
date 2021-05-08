@@ -181,6 +181,7 @@
 					<!--右クリックメニュー-->
 					<DockPanel.ContextMenu>
 						<ContextMenu>
+							<MenuItem Header="設定" Click="Settings_Click"/>
 							<MenuItem Header="最前面に表示"
 									  IsChecked="{Binding Source={x:Static appRoot:App.Current}, Path=MainWindow.Topmost, Mode=TwoWay}" IsCheckable="True"/>
 							<MenuItem Header="全アイテム管理"

@@ -14,6 +14,7 @@ using miniTodo.ViewModel;
 using System.ComponentModel;
 using System.Windows.Media.Animation;
 using System.Diagnostics;
+using miniTodo.UserSettings;
 
 namespace miniTodo.View {
 	/// <summary>
@@ -119,6 +120,20 @@ namespace miniTodo.View {
 			view.ShowDialog();
 		}
 
+		/// <summary>
+		/// 設定のクリックイベント
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void Settings_Click(object sender, RoutedEventArgs e) {
+			var mainVM = DataContext as MainWindowViewModel;
+			var settingsVM = new SettingsViewModel();
+			var view = new SettingsView(settingsVM);
+			view.DataContext = settingsVM;
+			view.Owner = this;
+			view.ShowDialog();
+		}
+
 		//以下、ListBoxへ追加・削除時のアニメーションのためのイベントハンドラ
 		//MVVM的ではないが、本アプリは本格的に作るつもりもないので、てっとり早い作りにしている
 
@@ -140,7 +155,7 @@ namespace miniTodo.View {
 			animation.Begin();
 
 			_player.Open(new Uri("Resource/ta_ge_ice01.mp3", UriKind.Relative));
-			_player.Volume = 0.25;
+			_player.Volume = (float)Settings.Instance.SE_Volume/100;
 			_player.Play();
 			_player.MediaEnded += (s, eArg) => _player.Close();
 		}
@@ -164,5 +179,6 @@ namespace miniTodo.View {
 				_alreadyAnimated.Add(id);
 			}
 		}
+
 	}
 }
