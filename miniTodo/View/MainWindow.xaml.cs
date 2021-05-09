@@ -15,6 +15,7 @@ using System.ComponentModel;
 using System.Windows.Media.Animation;
 using System.Diagnostics;
 using miniTodo.UserSettings;
+using miniTodo.Config;
 
 namespace miniTodo.View {
 	/// <summary>
@@ -85,6 +86,11 @@ namespace miniTodo.View {
 			var listbox = e.Source as ListBox;
 			var viewModel = listbox.SelectedItem as TodoViewModel;
 			var window = new EditTodoView(viewModel);
+			WindowPositionManager.Instance.RestoreWindowPosition(window);
+			window.Closing += (s, eArg) => {
+				WindowPositionManager.Instance.RecordWindowPosition(window);
+			};
+
 			if (window.ShowDialog() == true) {
 			    _viewModel.Save();
 			}

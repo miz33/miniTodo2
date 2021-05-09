@@ -87,6 +87,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Config\WindowPositionManager.cs" />
     <Compile Include="View\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>
@@ -198,6 +199,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="ReleaseNote.txt" />
     <Content Include="Resource\Readme.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
