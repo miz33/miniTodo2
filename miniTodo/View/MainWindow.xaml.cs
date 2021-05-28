@@ -95,7 +95,9 @@ namespace miniTodo.View {
 			    _viewModel.Save();
 			}
 		}
-
+		private void Minimize_Click(object sender, RoutedEventArgs e) {
+			this.WindowState = WindowState.Minimized;
+		}
 		private void Close_Click(object sender, RoutedEventArgs e) {
 			Close();
 		}

@@ -1,5 +1,7 @@
 ﻿miniTodo Release note
 
+■version 2.01.0
+- 最小化ボタンを追加、Closeボタンの表記をxに変更
 
 ■version 2.00.0
 昔作っていたminiTodoをベースに開発再開します。

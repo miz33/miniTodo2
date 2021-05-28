@@ -167,7 +167,8 @@
 								</Menu>
 							</StackPanel>
 						</Button>
-						<Button Click="Close_Click" >Close</Button>
+						<Button Click="Minimize_Click" Padding="5,0,5,0">-</Button>
+						<Button Click="Close_Click" Padding="5,0,5,0">x</Button>
 						<StackPanel.Style>
 							<Style TargetType="{x:Type StackPanel}">
 								<Style.Triggers>
