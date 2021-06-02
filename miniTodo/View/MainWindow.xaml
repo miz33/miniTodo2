@@ -152,6 +152,7 @@
 					<TextBlock Text="{Binding Path=RemainTodosNum}" Margin="2" Style="{StaticResource _glowText}"/>
 					<!--ボタン-->
 					<StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+						<!-- 現在グラフ化機能は機能していないのでボタンは非表示にしておく
 						<Button Command="{Binding Path=ShowDailyGraphCommand}">
 							<StackPanel Orientation="Horizontal" VerticalAlignment="Stretch">
 								<TextBlock VerticalAlignment="Center">Graph</TextBlock>
@@ -167,6 +168,7 @@
 								</Menu>
 							</StackPanel>
 						</Button>
+						-->
 						<Button Click="Minimize_Click" Padding="5,0,5,0">-</Button>
 						<Button Click="Close_Click" Padding="5,0,5,0">x</Button>
 						<StackPanel.Style>
