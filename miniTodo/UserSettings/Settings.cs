@@ -12,10 +12,13 @@ namespace miniTodo.UserSettings {
 		#endregion
 
 		#region public property
+
+		public OperationSettings Operation { get; set; } = new OperationSettings();
+
 		/// <summary>
 		/// 操作等の効果音の音量(min:0, max:100)
 		/// </summary>
-		public int SE_Volume { get; set; }
+		public int SE_Volume { get; set; } = 5;
 
 		private static Settings _instance;
 		public static Settings Instance {

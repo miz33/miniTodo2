@@ -27,10 +27,28 @@ namespace miniTodo.View {
 			DataContext = vm;
 			_viewModel = vm;
 			InitializeComponent();
-			_newTodoTextBox.InputBindings.Add(
-				new KeyBinding(vm.CreateCommand, new KeyGesture(Key.Enter)));
-			_newTodoTextBox.InputBindings.Add(
-				new KeyBinding(vm.CreateToTopCommand, new KeyGesture(Key.Enter, ModifierKeys.Control)));
+
+			//TODO ここでキーバインディングの処理をすると、設定を変更したあと再起動しないと反映されない。設定画面を閉じたらキーバインディングを再読み込みするようにしたい。
+
+			//新規Todo入力テキストボックスのKeyBinding
+			var action_to_command = new Dictionary<NewTodoActions, ICommand>() {
+				{ NewTodoActions.InsertToFirst, vm.CreateToTopCommand },
+				{ NewTodoActions.InsertToLast, vm.CreateCommand },
+				{ NewTodoActions.None, null }
+			};
+			var key_to_action = new Dictionary<KeyGesture, NewTodoActions>() {
+				{ new KeyGesture(Key.Enter), Settings.Instance.Operation.EnterOnNewTodoTextBox },
+				{ new KeyGesture(Key.Enter, ModifierKeys.Shift), Settings.Instance.Operation.ShiftEnterOnNewTodoTextBox },
+				{ new KeyGesture(Key.Enter, ModifierKeys.Control), Settings.Instance.Operation.CtrlEnterOnNewTodoTextBox }
+			};
+
+			foreach (var key in key_to_action.Keys) {
+				var actions = key_to_action[key];
+				var command = action_to_command[actions];
+				if (command != null) {
+					_newTodoTextBox.InputBindings.Add(new KeyBinding(command, key));
+				}
+			}
 
 			//Doneの時のサウンド
 			_player = new MediaPlayer();

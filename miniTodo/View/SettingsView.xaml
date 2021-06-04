@@ -14,12 +14,40 @@
 			<Button Click="Cancel_Clicked">Cancel</Button>
 			<Button Click="OK_Clicked">OK</Button>
 		</StackPanel>
-		<StackPanel Orientation="Horizontal">
-			<TextBlock>効果音量</TextBlock>
-			<Slider x:Name="_slider" TickFrequency="1" IsSnapToTickEnabled="true" 
-					Width="200" Minimum="0" Maximum="100" PreviewMouseUp="SE_Volume_Changed"  Value="{Binding Path=SE_Volume}"/>
-			<TextBlock Text="{Binding ElementName=_slider, Path=Value}"/>
-		</StackPanel>
-
-    </DockPanel>
+		<TabControl>
+			<TabItem Header="動作">
+				<StackPanel>
+					<TextBlock>新規入力テキストボックスでのキー操作</TextBlock>
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition/>
+							<RowDefinition/>
+							<RowDefinition/>
+						</Grid.RowDefinitions>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition/>
+							<ColumnDefinition/>
+						</Grid.ColumnDefinitions>
+						<TextBlock Grid.Row="0" Grid.Column="0">Enter押下時</TextBlock>
+						<TextBlock Grid.Row="1" Grid.Column="0">Shift+Enter押下時</TextBlock>
+						<TextBlock Grid.Row="2" Grid.Column="0">Ctrl+Enter押下時</TextBlock>
+						<ComboBox Grid.Row="0" Grid.Column="1" SelectedValue="{Binding ActionWhenEnterOnNewTodoTextBox}"
+								  ItemsSource="{Binding NewTodoActionChoice}" DisplayMemberPath="Key" SelectedValuePath="Value"/>
+						<ComboBox Grid.Row="1" Grid.Column="1" SelectedValue="{Binding ActionWhenShiftEnterOnNewTodoTextBox}"
+								  ItemsSource="{Binding NewTodoActionChoice}" DisplayMemberPath="Key" SelectedValuePath="Value"/>
+						<ComboBox Grid.Row="2" Grid.Column="1" SelectedValue="{Binding ActionWhenCtrlEnterOnNewTodoTextBox}"
+								  ItemsSource="{Binding NewTodoActionChoice}" DisplayMemberPath="Key" SelectedValuePath="Value"/>
+					</Grid>
+				</StackPanel>
+			</TabItem>
+			<TabItem Header="サウンド">
+				<StackPanel Orientation="Horizontal">
+					<TextBlock>効果音量</TextBlock>
+					<Slider x:Name="_slider" TickFrequency="1" IsSnapToTickEnabled="true" 
+							Width="200" Minimum="0" Maximum="100" PreviewMouseUp="SE_Volume_Changed"  Value="{Binding Path=SE_Volume}"/>
+					<TextBlock Text="{Binding ElementName=_slider, Path=Value}"/>
+				</StackPanel>
+			</TabItem>
+		</TabControl>
+	</DockPanel>
 </Window>
